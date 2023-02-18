@@ -9,7 +9,7 @@ import numpy as np
 from astropy.nddata.nduncertainty import NDUncertainty
 from astropy.units import dimensionless_unscaled
 from astropy.utils import format_doc, sharedmethod
-from astropy.utils.exceptions import AstropyUserWarning
+from astropy.utils.exceptions import AstropyDeprecationWarning, AstropyUserWarning
 
 __all__ = ["NDArithmeticMixin"]
 
@@ -253,6 +253,13 @@ class NDArithmeticMixin:
         result = self._arithmetic_data(operation, operand, **kwds2["data"])
 
         # Determine the other properties
+        if propagate_uncertainties is False:
+            warnings.warn(("propagate_uncertainties=False will become equivalent to "
+                           "propagate_uncertainties=None in v6.0. If you would like the current "
+                           "behavior to be available via an alternative API, please comment on "
+                           "astropy issue #14404: "
+                           "https://github.com/astropy/astropy/issues/14404"),
+                          category=AstropyDeprecationWarning)
         if propagate_uncertainties is None:
             kwargs["uncertainty"] = None
         elif not propagate_uncertainties:
